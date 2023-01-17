@@ -36,3 +36,4 @@ sdk/steamworksexample/.vs/
 sdk/steamworksexample/debug/
 sdk/steamworksexample/debug
 *.log
+*.tlog
