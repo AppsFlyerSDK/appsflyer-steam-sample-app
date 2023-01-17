@@ -24,16 +24,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
-# Executables
-*.exe
-*.out
-*.app
-
-sdk/steamworksexample/.vs
-sdk/steamworksexample/.vs/
-sdk/steamworksexample/debug/
-sdk/steamworksexample/debug
 *.log
 *.tlog
