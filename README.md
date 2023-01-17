@@ -81,6 +81,6 @@ using json = nlohmann::json;
 2. Open the solution "../appsflyer-steam-sample-app/steam-sample-app/steamworksexample/SteamworksExample.sln"
 3. Open "Source Files/Main.cpp" file
 4. On line 244, replace DEV_KEY and STEAM_APP_ID with your [app details](#App-Details)
-5. Run the app by pressing on the play button on the top toolbar ("Local Windows Debugger"). Make sure the the mode is Debug and Win32.
+5. Run the app by pressing on the play button on the top toolbar ("Local Windows Debugger"). Make sure that the mode is set to Debug.
 ![Visual Studio Toolbar Image](images/vs-run.PNG?raw=true "Visual Studio Toolbar Image")
 6. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
