@@ -16,7 +16,7 @@ you may use this sample app as a reference for integrating AppsFlyer into your S
 
 ### Pre-requisite
 1. [Steamworks SDK](https://partner.steamgames.com/doc/sdk) integrated within your project
-2. [VCPKG](https://vcpkg.io/en/index.html) - openssl & nlohmann-json packages
+2. [vcpkg](https://vcpkg.io/en/index.html) - openssl & nlohmann-json packages
 <pre><code>vcpkg install nlohmann-json:x86-windows
 vcpkg install openssl:x86-windows</code></pre>
 
