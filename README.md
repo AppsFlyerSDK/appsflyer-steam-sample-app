@@ -1,30 +1,35 @@
-# AppsFlyer Steam Connector
+# AppsFlyer Steam Integration
 
-## **Getting started with AppsFlyer Steam Connector**
+## **Getting started with AppsFlyer Steam Integration**
 
 AppsFlyer empowers marketers and helps them make better decisions.
 
 This is done by providing marketers with powerful tools that solve real pain points. These include cross-platform attribution, mobile and web analytics, deep linking, fraud detection, privacy management and preservation, and much more.
 
-By integrating the connector with AppsFlyer, you get [attribution](https://support.appsflyer.com/hc/en-us/articles/207447053) out-of-the-box. 
-
 With this sample app, we will be able to demonstrate basic integration which includes the first open/sessions and in-app events (i.e purchase events).
+
+AppsFlyer requires the game to report activities within it like app open. In order to do that, the app communicate with the AppsFlyer APIs over HTTPS - the sample app includes the code that does that.
+you may use this sample app as a reference for integrating AppsFlyer into your Steam game.
 
 <hr/>
 
-## **Connector Set-up:**
+## **Implementing AppsFlyer into your own Steam game**
 
+### Pre-requisite
+1. [Steamworks SDK](https://partner.steamgames.com/doc/sdk) integrated within your project
+2. [VCPKG](https://vcpkg.io/en/index.html)
 
-
-1. Add the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
-2. Add [Steamworks SDK](https://partner.steamgames.com/doc/sdk) to your project
-3. Use VCPKG to install the dependencies:
-* vcpkg install nlohmann-json:x86-windows
-* vcpkg install openssl:x86-windows
+### Set Up
+1. Copy the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
+2. Use [VCPKG](https://vcpkg.io/en/index.html) to install the dependencies:
+<pre><code>vcpkg install nlohmann-json:x86-windows
+vcpkg install openssl:x86-windows</code></pre>
 
 <hr/>
 
 ## **AppsflyerConnectorHTTP - Interface**
+
+“AppsflyerConnectorHTTP.h”, which is include in the folder copied above, contains the required code and logic to connect to our servers and report events.
 
 First, Import the connector: 
 <pre><code>#include "AppsflyerConnectorHTTP.h"
