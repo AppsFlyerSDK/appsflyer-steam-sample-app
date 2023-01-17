@@ -8,7 +8,7 @@ This is done by providing marketers with powerful tools that solve real pain poi
 
 By integrating the connector with AppsFlyer, you get [attribution](https://support.appsflyer.com/hc/en-us/articles/207447053) out-of-the-box. 
 
-With this sample app, we will be able to demonstrate basic integration which includes the [first open](https://dev.appsflyer.com/hc/reference/post_first-open-app-platform-app-id)/[sessions](https://dev.appsflyer.com/hc/reference/post_session-app-platform-app-id) and [in-app events](https://dev.appsflyer.com/hc/reference/post_inapp-app-platform-app-id) (i.e purchase events).
+With this sample app, we will be able to demonstrate basic integration which includes the first open/sessions and in-app events (i.e purchase events).
 
 <hr/>
 
@@ -16,10 +16,9 @@ With this sample app, we will be able to demonstrate basic integration which inc
 
 
 
-1. Download the [AppsFlyer Steam Connector files](https://drive.google.com/file/d/1kR__MdEG3viAsH7dBWAf8wlHsx46uVzd/view?usp=share_link).
-2. Unzip the files and add them into your C++ project under Header Files -> AppsFlyer
-3. Add [Steamworks SDK](https://partner.steamgames.com/doc/sdk) to your project
-4. Use VCPKG to install the dependencies:
+1. Add the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
+2. Add [Steamworks SDK](https://partner.steamgames.com/doc/sdk) to your project
+3. Use VCPKG to install the dependencies:
 * vcpkg install nlohmann-json:x86-windows
 * vcpkg install openssl:x86-windows
 
