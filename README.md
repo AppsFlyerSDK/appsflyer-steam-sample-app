@@ -77,7 +77,7 @@ using json = nlohmann::json;
 
 ## Running the Sample App 
 
-1. Install [Visual Studio ](https://visualstudio.microsoft.com/)
+1. Install [Visual Studio](https://visualstudio.microsoft.com/)
 2. Open the solution "../appsflyer-steam-sample-app/steam-sample-app/steamworksexample/SteamworksExample.sln"
 3. Open Main.cpp file
 4. On line 244, replace DEV_KEY and STEAM_APP_ID with your [app details](#App-Details)
