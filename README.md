@@ -87,5 +87,5 @@ using json = nlohmann::json;
 3. Open Main.cpp file
 4. On line 244, replace DEV_KEY and STEAM_APP_ID with your [app details](#App-Details)
 5. Run the app by pressing on the play button on the top toolbar ("Local Windows Debugger"). Make sure the the mode is Debug and Win32.
-![Alt text](vs-run.png?raw=true "Title")
+![Visual Studio Toolbar Image](images/vs-run.PNG?raw=true "Title")
 6. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
