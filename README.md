@@ -27,8 +27,7 @@ With this sample app, we will be able to demonstrate basic integration which inc
 ## **AppsflyerConnectorHTTP - Interface**
 
 First, Import the connector: 
-<pre><code>
-#include "AppsflyerConnectorHTTP.h"
+<pre><code>#include "AppsflyerConnectorHTTP.h"
 </code></pre>
 
 #### void **start**(const char* **devkey**, const char* **appID**)
@@ -37,8 +36,7 @@ This method receives your api key and app id, and initializes the AppsFlyer Conn
 
 ##### <span style="text-decoration:underline;">Usage:</span>
 
-<pre><code>
-AppsflyerConnectorHTTP()->start("DEV_KEY", "STEAM_APP_ID");
+<pre><code>AppsflyerConnectorHTTP()->start("DEV_KEY", "STEAM_APP_ID");
 </code></pre>
 
 ##### App-Details
@@ -63,16 +61,14 @@ This method receives an event name and json object and sends an in-app event to 
 
 ##### <span style="text-decoration:underline;">Usage:</span>
 
-<pre><code>
-json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
+<pre><code>json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 std::string event_name = "af_purchase";
 AppsflyerConnectorHTTP()->logEvent(event_name, event_values);
 </code></pre>
 
 ##### *In order to use json please make sure to use the following imports:
 
-<pre><code>
-#include &lt;nlohmann/json.hpp>
+<pre><code>#include &lt;nlohmann/json.hpp>
 using json = nlohmann::json;
 </code></pre>
 
