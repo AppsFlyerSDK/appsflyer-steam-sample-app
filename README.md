@@ -13,15 +13,10 @@ you may use this sample app as a reference for integrating AppsFlyer into your S
 
 <hr/>
 
-## **Implementing AppsFlyer into your own Steam game**
 
 ### Pre-requisite
 1. [Steamworks SDK](https://partner.steamgames.com/doc/sdk) integrated within your project
-2. [VCPKG](https://vcpkg.io/en/index.html)
-
-### Set Up
-1. Copy the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
-2. Use [VCPKG](https://vcpkg.io/en/index.html) to install the dependencies:
+2. [VCPKG](https://vcpkg.io/en/index.html) - openssl & nlohmann-json packages
 <pre><code>vcpkg install nlohmann-json:x86-windows
 vcpkg install openssl:x86-windows</code></pre>
 
@@ -31,11 +26,9 @@ vcpkg install openssl:x86-windows</code></pre>
 
 “AppsflyerConnectorHTTP.h”, which is include in the folder copied above, contains the required code and logic to connect to our servers and report events.
 
-First, Import the connector: 
-<pre><code>#include "AppsflyerConnectorHTTP.h"
-</code></pre>
+<br/>
 
-#### void **start**(const char* **devkey**, const char* **appID**)
+#### void start(const char* devkey, const char* appID)
 
 This method receives your api key and app id, and initializes the AppsFlyer Connector (and sends “first open/session” request to AppsFlyer).
 
@@ -89,3 +82,19 @@ using json = nlohmann::json;
 5. Run the app by pressing on the play button on the top toolbar ("Local Windows Debugger"). Make sure that the mode is set to Debug.
 ![Visual Studio Toolbar Image](images/vs-run.PNG?raw=true "Visual Studio Toolbar Image")
 6. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
+
+<hr/>
+
+## **Implementing AppsFlyer into your own Steam game**
+
+### Set Up
+1. Copy the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
+2. Import the connector: 
+<pre><code>#include "AppsflyerConnectorHTTP.h"
+</code></pre>
+3. Import nlohmann-json
+<pre><code>#include &lt;nlohmann/json.hpp>
+using json = nlohmann::json;
+</code></pre>
+5. [Initialize](#void-startconst-char-devkey-const-char-appid) the AppsFlyer integration 
+6. Report [in-app events](#void-logeventstdstring-event_name-json-event_values)
