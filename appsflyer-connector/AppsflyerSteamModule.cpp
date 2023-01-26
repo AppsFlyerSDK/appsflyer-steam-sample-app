@@ -2,23 +2,23 @@
 using json = nlohmann::json;
 
 #include "steam/steam_api.h"
-#include "AppsflyerConnectorHTTP.h"
-#include "AppsflyerConnector.cpp"
+#include "AppsflyerSteamModule.h"
+#include "AppsflyerModule.cpp"
 
 using namespace std;
 
 
-CAppsflyerConnectorHTTP* AppsflyerConnectorHTTP()
+CAppsflyerSteamModule* AppsflyerSteamModule()
 {
-	static CAppsflyerConnectorHTTP inv;
+	static CAppsflyerSteamModule inv;
 	return &inv;
 }
 
-CAppsflyerConnectorHTTP::CAppsflyerConnectorHTTP() {
+CAppsflyerSteamModule::CAppsflyerSteamModule() {
 	SteamAPI_RunCallbacks();
 }
 
-void CAppsflyerConnectorHTTP::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, bool bIOFailure)
+void CAppsflyerSteamModule::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, bool bIOFailure)
 {
 	if (bIOFailure) {
 		onCallbackFailure(pCallback);
@@ -26,7 +26,7 @@ void CAppsflyerConnectorHTTP::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, 
 	else {
 		onCallbackSuccess(pCallback);
 
-		AppsflyerConnector afc(devkey, appID);
+		AppsflyerModule afc(devkey, appID);
 
 		uint64 context = pCallback->m_ulContextValue;
 		switch (context)
@@ -47,14 +47,14 @@ void CAppsflyerConnectorHTTP::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, 
 	SteamHTTP()->ReleaseHTTPRequest(pCallback->m_hRequest);
 }
 
-void CAppsflyerConnectorHTTP::send_http_post(HTTPRequestHandle handle) {
+void CAppsflyerSteamModule::send_http_post(HTTPRequestHandle handle) {
 	SteamAPICall_t api_handle{};
 	bool res = SteamHTTP()->SendHTTPRequest(handle, &api_handle);
-	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerConnectorHTTP::OnHTTPCallBack);
+	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
 	SteamAPI_RunCallbacks();
 }
 
-void CAppsflyerConnectorHTTP::onCallbackSuccess(HTTPRequestCompleted_t* pCallback) {
+void CAppsflyerSteamModule::onCallbackSuccess(HTTPRequestCompleted_t* pCallback) {
 	// Handle Success
 	uint64 context = pCallback->m_ulContextValue;
 	switch (context)
@@ -71,7 +71,7 @@ void CAppsflyerConnectorHTTP::onCallbackSuccess(HTTPRequestCompleted_t* pCallbac
 	}
 }
 
-void CAppsflyerConnectorHTTP::onCallbackFailure(HTTPRequestCompleted_t* pCallback) {
+void CAppsflyerSteamModule::onCallbackFailure(HTTPRequestCompleted_t* pCallback) {
 	// Handle Failure
 	uint64 context = pCallback->m_ulContextValue;
 	switch (context)
@@ -88,11 +88,11 @@ void CAppsflyerConnectorHTTP::onCallbackFailure(HTTPRequestCompleted_t* pCallbac
 	}
 }
 
-void CAppsflyerConnectorHTTP::start(const char * dkey, const char * appid) {
+void CAppsflyerSteamModule::start(const char * dkey, const char * appid) {
 	// testing af_firstOpen/af_session and af_inappEvent 
 	devkey = dkey;
 	appID = appid;
-	AppsflyerConnector afc(devkey, appID);
+	AppsflyerModule afc(devkey, appID);
 	CSteamID usrID = SteamUser()->GetSteamID();
 	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
 	std::ostringstream os;
@@ -132,14 +132,14 @@ void CAppsflyerConnectorHTTP::start(const char * dkey, const char * appid) {
 	SteamAPICall_t api_handle{};
 	HTTPRequestHandle reqH = afc.af_firstOpen_init(req);
 	bool res = SteamHTTP()->SendHTTPRequest(reqH, &api_handle);
-	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerConnectorHTTP::OnHTTPCallBack);
+	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
 	SteamAPI_RunCallbacks();
 
-	//AppsflyerConnectorHTTP()->send_http_post(afc.af_firstOpen_init(req));
+	//AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req));
 }
 
-void CAppsflyerConnectorHTTP::logEvent(std::string event_name, json event_values) {
-	AppsflyerConnector afc("sQ84wpdxRTR4RMCaE9YqS4", "480");
+void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) {
+	AppsflyerModule afc("sQ84wpdxRTR4RMCaE9YqS4", "480");
 	CSteamID usrID = SteamUser()->GetSteamID();
 	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
 	std::ostringstream os;
@@ -179,5 +179,5 @@ void CAppsflyerConnectorHTTP::logEvent(std::string event_name, json event_values
 	req.event_name = event_name;
 	req.event_values = event_values;
 
-	AppsflyerConnectorHTTP()->send_http_post(afc.af_inappEvent(req));
+	AppsflyerSteamModule()->send_http_post(afc.af_inappEvent(req));
 }

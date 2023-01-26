@@ -5,7 +5,7 @@
 using json = nlohmann::json;
 
 #include "steam/steam_api.h"
-#include "AppsflyerConnectorHTTP.h"
+#include "AppsflyerSteamModule.h"
 
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
@@ -14,9 +14,9 @@ using json = nlohmann::json;
 
 using namespace std;
 
-class AppsflyerConnector {
+class AppsflyerModule {
 public:
-	AppsflyerConnector(const char* devkey, std::string appid) {
+	AppsflyerModule(const char* devkey, std::string appid) {
 		_devkey = devkey;
 		_appid = appid;
 	}
@@ -73,7 +73,7 @@ public:
 
 	// report inapp event to AppsFlyer 
 	HTTPRequestHandle af_inappEvent(RequestData req) {
-		std::string url = "https://events.appsflyer.com/v1.0/c2s/inapp/app/webos/" + _appid;
+		std::string url = "https://events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + _appid;
 
 		/* Now specify the POST data */
 		std::ostringstream oss;
@@ -217,7 +217,7 @@ private:
 
 	// report first open event to AppsFlyer 
 	HTTPRequestHandle af_firstOpenRequest(RequestData req) {
-		std::string url = "https://events.appsflyer.com/v1.0/c2s/first_open/app/webos/" + _appid;
+		std::string url = "https://events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + _appid;
 
 		/* Now specify the POST data */
 		std::ostringstream oss;
@@ -230,7 +230,7 @@ private:
 
 	// report session event (after the counter passes 2 opens) to AppsFlyer 
 	HTTPRequestHandle af_sessionRequest(RequestData req) {
-		std::string url = "https://events.appsflyer.com/v1.0/c2s/session/app/webos/" + _appid;
+		std::string url = "https://events.appsflyer.com/v1.0/c2s/session/app/steam/" + _appid;
 
 		/* Now specify the POST data */
 		std::ostringstream oss;

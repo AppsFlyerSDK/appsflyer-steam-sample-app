@@ -9,7 +9,7 @@
 using json = nlohmann::json;
 
 #include "steam/steam_api.h"
-#include "AppsflyerConnectorHTTP.h"
+#include "AppsflyerSteamModule.h"
 #ifdef WIN32
 #include <direct.h>
 #else
@@ -32,6 +32,15 @@ using json = nlohmann::json;
 #include "SpaceWarClient.h"
 #include <string>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#ifdef WIN32
+#define stat _stat
+#endif
 
 using namespace std;
 
@@ -240,15 +249,14 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 		return EXIT_FAILURE;
 	}
 	else {
-		// Initialize the AppsFlyer Steam Connector
-		AppsflyerConnectorHTTP()->start("DEV_KEY", "STEAM_APP_ID");
+		// Initialize the AF connector
+		AppsflyerSteamModule()->start("bFzaVu2iecN77po5mWMJuL", "1234561");
 		
-		/* ***Sending In-app Event*** */
-		// Set the event values json and event name
+		// Setting the event values json and event name
 		json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 		std::string event_name = "af_purchase";
-		// Send the in-app event via the connector
-		AppsflyerConnectorHTTP()->logEvent(event_name, event_values);
+		//sending the in-app event via the connector
+		AppsflyerSteamModule()->logEvent(event_name, event_values);
 	}
 
 	const char *pchServerAddress, *pchLobbyID;

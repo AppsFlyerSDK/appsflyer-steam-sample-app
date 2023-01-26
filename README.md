@@ -22,19 +22,19 @@ vcpkg install openssl:x86-windows</code></pre>
 
 <hr/>
 
-## **AppsflyerConnectorHTTP - Interface**
+## **AppsflyerSteamModule - Interface**
 
-“AppsflyerConnectorHTTP.h”, which is include in the folder copied above, contains the required code and logic to connect to our servers and report events.
+AppsflyerSteamModule.h”, which is include in the folder copied above, contains the required code and logic to connect to our servers and report events.
 
 <br/>
 
 #### void start(const char* devkey, const char* appID)
 
-This method receives your api key and app id, and initializes the AppsFlyer Connector (and sends “first open/session” request to AppsFlyer).
+This method receives your api key and app id, and initializes the AppsFlyer Module (and sends “first open/session” request to AppsFlyer).
 
 ##### <span style="text-decoration:underline;">Usage:</span>
 
-<pre><code>AppsflyerConnectorHTTP()->start("DEV_KEY", "STEAM_APP_ID");
+<pre><code>AppsflyerSteamModule()->start("DEV_KEY", "STEAM_APP_ID");
 </code></pre>
 
 ##### App-Details
@@ -61,7 +61,7 @@ This method receives an event name and json object and sends an in-app event to 
 
 <pre><code>json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 std::string event_name = "af_purchase";
-AppsflyerConnectorHTTP()->logEvent(event_name, event_values);
+AppsflyerSteamModule()->logEvent(event_name, event_values);
 </code></pre>
 
 ##### *In order to use json please make sure to use the following imports:
@@ -88,9 +88,9 @@ using json = nlohmann::json;
 ## **Implementing AppsFlyer into your own Steam game**
 
 ### Set Up
-1. Copy the files from the "appsflyer-connector" folder into your C++ project under Header Files -> AppsFlyer
-2. Import the connector: 
-<pre><code>#include "AppsflyerConnectorHTTP.h"
+1. Copy the files from the "appsflyer-module" folder into your C++ project under Header Files -> AppsFlyer
+2. Import the Module: 
+<pre><code>#include "AppsflyerSteamModule.h"
 </code></pre>
 3. Import nlohmann-json
 <pre><code>#include &lt;nlohmann/json.hpp>
