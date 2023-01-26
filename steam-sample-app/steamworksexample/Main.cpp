@@ -249,13 +249,13 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 		return EXIT_FAILURE;
 	}
 	else {
-		// Initialize the AF connector
-		AppsflyerSteamModule()->start("bFzaVu2iecN77po5mWMJuL", "1234561");
-		
+		// Initializing the AppsFlyer Steam Module
+		AppsflyerSteamModule()->start("DEV_KEY", "STEAM_APP_ID");
+
 		// Setting the event values json and event name
 		json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 		std::string event_name = "af_purchase";
-		//sending the in-app event via the connector
+		// Sending the in-app event via the connector
 		AppsflyerSteamModule()->logEvent(event_name, event_values);
 	}
 

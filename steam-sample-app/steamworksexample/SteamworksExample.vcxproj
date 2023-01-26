@@ -246,7 +246,7 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AppsflyerConnectorHTTP.h" />
+    <ClInclude Include="AppsflyerSteamModule.h" />
     <ClInclude Include="DeviceID.h" />
     <ClInclude Include="RequestData.h" />
     <ClInclude Include="stdafx.h" />
@@ -302,8 +302,8 @@
     <ClInclude Include="voicechat.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppsflyerConnector.cpp" />
-    <ClCompile Include="AppsflyerConnectorHTTP.cpp" />
+    <ClCompile Include="AppsflyerModule.cpp" />
+    <ClCompile Include="AppsflyerSteamModule.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="gameenginesdl.cpp">

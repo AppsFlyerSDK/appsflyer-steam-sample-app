@@ -59,6 +59,8 @@
     <Library Include="..\redistributable_bin\steam_api.lib" />
     <Library Include="..\public\steam\lib\win32\sdkencryptedappticket.lib" />
     <Library Include="..\redistributable_bin\steam_api.lib" />
+    <Library Include="..\public\steam\lib\win32\sdkencryptedappticket.lib" />
+    <Library Include="..\redistributable_bin\steam_api.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -178,16 +180,13 @@
     <ClInclude Include="voicechat.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="AppsflyerConnectorHTTP.h">
+    <ClInclude Include="AppsflyerSteamModule.h">
       <Filter>Header Files\AppsFlyer</Filter>
     </ClInclude>
     <ClInclude Include="RequestData.h">
       <Filter>Header Files\AppsFlyer</Filter>
     </ClInclude>
     <ClInclude Include="DeviceID.h">
-      <Filter>Header Files\AppsFlyer</Filter>
-    </ClInclude>
-    <ClInclude Include="AF_event_values.h">
       <Filter>Header Files\AppsFlyer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -327,10 +326,10 @@
     <ClCompile Include="voicechat.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="AppsflyerConnector.cpp">
+    <ClCompile Include="AppsflyerModule.cpp">
       <Filter>Header Files\AppsFlyer</Filter>
     </ClCompile>
-    <ClCompile Include="AppsflyerConnectorHTTP.cpp">
+    <ClCompile Include="AppsflyerSteamModule.cpp">
       <Filter>Header Files\AppsFlyer</Filter>
     </ClCompile>
   </ItemGroup>

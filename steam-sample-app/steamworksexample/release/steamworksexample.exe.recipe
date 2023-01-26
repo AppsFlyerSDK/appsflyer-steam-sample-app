@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\GilMor\Documents\GitHub\steam-af-mockup\sdk\steamworksexample\Release\steamworksexample.exe</FullPath>
+      <FullPath>C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\steamworksexample.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
