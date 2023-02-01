@@ -139,7 +139,8 @@ void CAppsflyerSteamModule::start(const char * dkey, const char * appid) {
 }
 
 void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) {
-	AppsflyerModule afc("sQ84wpdxRTR4RMCaE9YqS4", "480");
+	AppsflyerModule afc(devkey, appID);
+
 	CSteamID usrID = SteamUser()->GetSteamID();
 	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
 	std::ostringstream os;
