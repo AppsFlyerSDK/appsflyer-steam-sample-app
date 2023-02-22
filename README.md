@@ -1,5 +1,10 @@
 # AppsFlyer Steam Integration
 
+> 🚧 OS-Restriction
+> 
+> This sample code currently supports windows environment only.
+
+
 ## **Getting started with AppsFlyer Steam Integration**
 
 AppsFlyer empowers marketers and helps them make better decisions.
