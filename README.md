@@ -1,3 +1,11 @@
+---
+title: Steam C++
+category: 6446526dddf659006c7ea807
+order: 3
+hidden: true
+slug: steam-vanilla
+---
+
 # AppsFlyer Steam Integration
 
 > 🚧 OS-Restriction
