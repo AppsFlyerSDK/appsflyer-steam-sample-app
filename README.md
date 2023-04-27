@@ -1,4 +1,3 @@
-<div style="visibility:hidden">
 ---
 title: Steam C++
 category: 6446526dddf659006c7ea807
@@ -6,7 +5,6 @@ order: 6
 hidden: true
 slug: steam-vanilla
 ---
-</div>
 
 # AppsFlyer Steam Integration
 
