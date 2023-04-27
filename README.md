@@ -6,6 +6,11 @@ hidden: true
 slug: steam-vanilla
 ---
 
+> Link to GitHub
+>
+> [GitHub](https://github.com/AppsFlyerSDK/appsflyer-steam-sample-app)
+
+
 # AppsFlyer Steam Integration
 
 > 🚧 OS-Restriction
