@@ -6,8 +6,8 @@ hidden: true
 slug: steam-vanilla
 ---
 
-> Link to GitHub
->
+
+> Link to repository
 > [GitHub](https://github.com/AppsFlyerSDK/appsflyer-steam-sample-app)
 
 
