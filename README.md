@@ -13,7 +13,7 @@ slug: steam-vanilla
 
 # AppsFlyer Steam Integration
 
-> 🚧 OS-Restriction
+> 🚧 OS Restriction
 > 
 > This sample code currently supports windows environment only.
 
