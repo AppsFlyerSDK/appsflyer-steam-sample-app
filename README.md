@@ -2,7 +2,7 @@
 title: Steam C++
 category: 6446526dddf659006c7ea807
 order: 6
-hidden: true
+hidden: false
 slug: steam-vanilla
 ---
 
