@@ -5,8 +5,11 @@
 class CAppsflyerSteamModule {
 public:
 	//This method receives your api key and app id,
-	//and initializes the AppsFlyer Connector (and sends “first open/session” request to AppsFlyer).
-	void start(const char* devkey, const char* appID); 
+	// This method receives your api key and app id,
+	// and initializes the AppsFlyer Connector 
+	void init(const char* devkey, const char* appID);
+	// sends “first open/session” request to AppsFlyer.
+	void start(bool skipFirst = false);
 	/*  These methods are called upon a un/successful steam http request callback. 
 		Those are placeholders that you can fill with the desired actions upon success/failure 
 		(within AppsflyerSteamModule.cpp file) */
@@ -14,6 +17,8 @@ public:
 	void onCallbackFailure(HTTPRequestCompleted_t* pCallback);
 	//This method receives an event name and json object and sends an in-app event to AppsFlyer.
 	void logEvent(std::string event_name, json event_values);
+	// returns true whether the game was installed before the given date
+	bool isInstallOlderThanDate(std::string datestring);
 private:
 	const char* devkey;
 	const char* appID;

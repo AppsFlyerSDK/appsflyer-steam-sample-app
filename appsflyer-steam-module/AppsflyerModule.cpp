@@ -129,6 +129,40 @@ public:
 		HRESULT hCreateGuid = CoCreateGuid(&gidReference);
 		return GUID_toString(&gidReference);
 	}
+
+	bool isInstallOlderThanDate(string date)
+	{
+		bool isInstallOlder = false;
+
+		AppId_t steamAppID = std::stoul(_appid, nullptr, 0);
+		char* pchFolder = new char[256];
+		uint32 cchFolderBufferSize = 256;
+		SteamApps()->GetAppInstallDir(steamAppID, pchFolder, cchFolderBufferSize);
+		struct stat result;
+		if (stat(pchFolder, &result) == 0)
+		{
+			//__time64_t excludeInstallDateBefore = "";
+			__time64_t mod_time = result.st_mtime;
+			auto folder_time = ctime(&mod_time);
+			std::time_t excludeInstallDateBefore = to_time_t(date);
+			double diff = difftime(mod_time, excludeInstallDateBefore);
+
+			isInstallOlder = diff < 0;
+
+			auto time = ctime(&mod_time);
+		}
+
+		return isInstallOlder;
+	}
+
+	std::time_t to_time_t(const std::string& str, bool is_dst = false, const std::string& format = "%Y-%b-%d %H:%M:%S")
+	{
+		std::tm t = { 0 };
+		t.tm_isdst = is_dst ? 1 : 0;
+		std::istringstream ss(str);
+		ss >> std::get_time(&t, format.c_str());
+		return mktime(&t);
+	}
 private:
 	// registry key to save the AF data.
 	HKEY reg_key = HKEY_CURRENT_USER;

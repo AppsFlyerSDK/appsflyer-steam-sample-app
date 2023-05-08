@@ -88,10 +88,12 @@ void CAppsflyerSteamModule::onCallbackFailure(HTTPRequestCompleted_t* pCallback)
 	}
 }
 
-void CAppsflyerSteamModule::start(const char * dkey, const char * appid) {
-	// testing af_firstOpen/af_session and af_inappEvent 
+void CAppsflyerSteamModule::init(const char* dkey, const char* appid) {
 	devkey = dkey;
 	appID = appid;
+}
+
+void CAppsflyerSteamModule::start(bool skipFirst) {
 	AppsflyerModule afc(devkey, appID);
 	CSteamID usrID = SteamUser()->GetSteamID();
 	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
@@ -135,7 +137,7 @@ void CAppsflyerSteamModule::start(const char * dkey, const char * appid) {
 	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
 	SteamAPI_RunCallbacks();
 
-	//AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req));
+	AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req));
 }
 
 void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) {
@@ -181,4 +183,10 @@ void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) 
 	req.event_values = event_values;
 
 	AppsflyerSteamModule()->send_http_post(afc.af_inappEvent(req));
+}
+
+bool CAppsflyerSteamModule::isInstallOlderThanDate(std::string datestring)
+{
+	AppsflyerModule afc(devkey, appID);
+	return afc.isInstallOlderThanDate(datestring);
 }

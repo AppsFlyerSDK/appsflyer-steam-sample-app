@@ -29,19 +29,35 @@ We recommend you use this sample app as a reference for integrating the code tha
 
 AppsflyerSteamModule.h”, included in the `appsflyer-module` folder, contains the required code and logic to connect to AppsFlyer servers and report events.
 
-### `void start(const char_ devkey, const char_ appID)`
+### `void init(const char* devkey, const char* appID)`
 
-This method receives your API key and app ID and initializes the AppsFlyer Module that sends first open and session requests to AppsFlyer.
+This method receives your API key and app ID and initializes the AppsFlyer Module.
 
 **Usage**:
 
-<pre><code>AppsflyerSteamModule()->start("DEV_KEY", "STEAM_APP_ID");
-</code></pre>
+```
+AppsflyerSteamModule()->init("DEV_KEY", "STEAM_APP_ID");
+```
 
 <span id="app-details">**Arguments**:</span>
 
 - `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+
+### `void start(bool skipFirst = false)`
+
+This method sends first open and /session requests to AppsFlyer.
+
+**Usage**:
+
+```
+// without the flag
+AppsflyerSteamModule()->start();
+
+// with the flag
+bool skipFirst = [SOME_CONDITION];
+AppsflyerSteamModule()->start(skipFirst);
+```
 
 ### `void **onCallbackSuccess**(HTTPRequestCompleted_t\* **pCallback**)`
 
@@ -49,6 +65,20 @@ This method receives your API key and app ID and initializes the AppsFlyer Modul
 
 The above methods are placeholders for the desired actions upon success/failure.  
 It is possible to handle different types of events with the switch case of the context within each function (“FIRST_OPEN_REQUEST”, ”SESSION_REQUEST”, ”INAPP_EVENT_REQUEST”).
+
+### `bool isInstallOlderThanDate(std::string datestring)`
+
+This method receives a date string and returns true if the game folder modification date is older than the date string. The date string format is: "2023-January-01 23:12:34"
+
+```
+// the modification date in this example is "2023-January-23 08:30:00"
+
+// will return false
+bool dateBefore = AppsflyerSteamModule()->isInstallOlderThanDate("2023-January-01 23:12:34");
+
+// will return true
+bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10 23:12:34");
+```
 
 ### `void **logEvent**(std::string **event_name**, json **event_values**)`
 
@@ -89,5 +119,5 @@ using json = nlohmann::json;
    <pre><code>#include &lt;nlohmann/json.hpp>
    using json = nlohmann::json;
    </code></pre>
-4. [Initialize](#void-startconst-char_-devkey-const-char_-appid) the AppsFlyer integration.
+4. [Initialize](#void-initconst-char-devkey-const-char-appid) the AppsFlyer integration.
 5. Report [in-app events](#void-logeventstdstring-event_name-json-event_values).
