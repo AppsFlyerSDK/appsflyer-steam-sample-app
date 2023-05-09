@@ -262,18 +262,6 @@ static int RealMain(const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow)
 		std::string event_name = "af_purchase";
 		// sending the in-app event via the connector
 		AppsflyerSteamModule()->logEvent(event_name, event_values);
-
-		AppId_t steamID = 480;
-		char *pchFolder = new char[256];
-		uint32 cchFolderBufferSize = 256;
-		SteamApps()->GetAppInstallDir(steamID, pchFolder, cchFolderBufferSize);
-		struct stat result;
-		if (stat(pchFolder, &result) == 0)
-		{
-			__time64_t mod_time = result.st_mtime;
-			auto time = ctime(&mod_time);
-			time = ctime(&mod_time);
-		}
 	}
 
 	const char *pchServerAddress, *pchLobbyID;

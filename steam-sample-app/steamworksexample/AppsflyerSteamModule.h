@@ -25,7 +25,8 @@ private:
 	friend CAppsflyerSteamModule* AppsflyerSteamModule();
 	CAppsflyerSteamModule();
 	CCallResult<CAppsflyerSteamModule, HTTPRequestCompleted_t> m_SteamAPICallCompleted;
-	void send_http_post(HTTPRequestHandle handle);
+	CCallResult<CAppsflyerSteamModule, HTTPRequestCompleted_t> m_SteamEventAPICallCompleted;
+	void send_http_post(HTTPRequestHandle handle, uint64 context);
 	void OnHTTPCallBack(HTTPRequestCompleted_t * pCallback, bool bIOFailure);
 };
 

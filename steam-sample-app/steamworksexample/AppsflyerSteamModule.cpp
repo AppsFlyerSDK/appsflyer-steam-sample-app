@@ -47,10 +47,20 @@ void CAppsflyerSteamModule::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, bo
 	SteamHTTP()->ReleaseHTTPRequest(pCallback->m_hRequest);
 }
 
-void CAppsflyerSteamModule::send_http_post(HTTPRequestHandle handle) {
+void CAppsflyerSteamModule::send_http_post(HTTPRequestHandle handle, uint64 context) {
 	SteamAPICall_t api_handle{};
 	bool res = SteamHTTP()->SendHTTPRequest(handle, &api_handle);
-	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
+	switch (context)
+	{
+	case FIRST_OPEN_REQUEST:
+		m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
+		break;
+	case INAPP_EVENT_REQUEST:
+		m_SteamEventAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
+		break;
+	default:
+		break;
+	}
 	SteamAPI_RunCallbacks();
 }
 
@@ -127,17 +137,11 @@ void CAppsflyerSteamModule::start(bool skipFirst) {
 
 	//adding steam uid to the request - TODO: add to request json after approved by the server
 	DeviceIDs steam_id;
-	steam_id.type = "custom";
+	steam_id.type = "steamid";
 	steam_id.value = steamID.c_str();
 	req.device_ids.insert(req.device_ids.end(), steam_id);
 
-	SteamAPICall_t api_handle{};
-	HTTPRequestHandle reqH = afc.af_firstOpen_init(req);
-	bool res = SteamHTTP()->SendHTTPRequest(reqH, &api_handle);
-	m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
-	SteamAPI_RunCallbacks();
-
-	AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req));
+	AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req), FIRST_OPEN_REQUEST);
 }
 
 void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) {
@@ -175,14 +179,14 @@ void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) 
 
 	//adding steam uid to the request - TODO: add to request json after approved by the server
 	DeviceIDs steam_id;
-	steam_id.type = "custom";
+	steam_id.type = "steamid";
 	steam_id.value = steamID.c_str();
 	req.device_ids.insert(req.device_ids.end(), steam_id);
 
 	req.event_name = event_name;
 	req.event_values = event_values;
 
-	AppsflyerSteamModule()->send_http_post(afc.af_inappEvent(req));
+	AppsflyerSteamModule()->send_http_post(afc.af_inappEvent(req), INAPP_EVENT_REQUEST);
 }
 
 bool CAppsflyerSteamModule::isInstallOlderThanDate(std::string datestring)
