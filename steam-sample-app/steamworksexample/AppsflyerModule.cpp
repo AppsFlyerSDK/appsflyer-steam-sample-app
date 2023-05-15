@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-
+#include <curl/curl.h>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
@@ -14,6 +14,7 @@ using json = nlohmann::json;
 
 using namespace std;
 
+
 class AppsflyerModule {
 public:
 	AppsflyerModule(const char* devkey, std::string appid) {
@@ -22,69 +23,100 @@ public:
 	}
 
 	//send curl with hmac auth and json data
-	HTTPRequestHandle send_http_post(std::string& url, std::string jsonData, uint64 ulContextValue) {
-		char* key = _strdup(_devkey);
-		int keylen = strlen(key);
-		const unsigned char* data = (const unsigned char*)_strdup(jsonData.c_str());
+	tuple<CURLcode, long> send_http_post(std::string& url, std::string jsonData, int ulContextValue) {
+		CURL* curl;
+		CURLcode res{};
+		long response_code;
+		std::string readBuffer;
+		curl = curl_easy_init();
+		if (curl) {
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-		int datalen = strlen((char*)data);
-		unsigned char* result = NULL;
-		unsigned int resultlen = -1;
+			char* key = _strdup(_devkey);
+			int keylen = strlen(key);
+			const unsigned char* data = (const unsigned char*)_strdup(jsonData.c_str());
 
-		result = mx_hmac_sha256((const void*)key, keylen, data, datalen, result, &resultlen);
+			int datalen = strlen((char*)data);
+			unsigned char* result = NULL;
+			unsigned int resultlen = -1;
 
-		////print encrypted data for debugging
-		//for (unsigned int i = 0; i < resultlen; i++) {
-		//	printf("%02hhX", result[i]); // or just "%02X" if you are not using C11 or later
-		//}
+			result = mx_hmac_sha256((const void*)key, keylen, data, datalen, result, &resultlen);
 
-		//allocate memory for array
-		std::stringstream ss;
-		for (unsigned int i = 0; i < resultlen; i++) {
-			ss << hex << setw(2) << setfill('0') << (int) static_cast <unsigned char>(result[i]);
+			for (unsigned int i = 0; i < resultlen; i++) {
+				//printf2("%02hhX", result[i]); // or just "%02X" if you are not using C11 or later
+			}
+
+			//allocate memory for array
+			std::stringstream ss;
+			for (unsigned int i = 0; i < resultlen; i++) {
+				ss << hex << setw(2) << setfill('0') << (int) static_cast <unsigned char>(result[i]);
+			}
+			std::string mystr = ss.str();
+
+			const char* a = "Authorization: ";
+			const char* b = mystr.c_str();
+
+			char buf[100];
+			strcpy_s(buf, a);
+			strcat_s(buf, b);
+
+			struct curl_slist* slist = NULL;
+			slist = curl_slist_append(slist, "Content-Type: application/json");
+			slist = curl_slist_append(slist, buf);
+			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);  // for --insecure option
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonData.c_str());
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, jsonData.length());
+			curl_easy_setopt(curl, CURLOPT_POST, 1);
+			//curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888"); // redirect traffic to Fiddler for debugging
+	
+			/* Perform the request, res will get the return code */
+			curl_easy_perform(curl);
+
+			/* Check for errors */
+			if (res != CURLE_OK) {
+				response_code = 0;
+				fprintf(stderr, "curl_easy_perform() failed: %s\n",
+					curl_easy_strerror(res));
+			}
+			else {
+				curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+				//std::string test = readBuffer;
+			}
+			/* always cleanup */
+			curl_easy_cleanup(curl);
 		}
-		std::string json_data_str = ss.str();
-
-		HTTPRequestHandle handle = SteamHTTP()->CreateHTTPRequest(k_EHTTPMethodPOST, url.c_str());
-
-		SteamHTTP()->SetHTTPRequestContextValue(handle, ulContextValue);
-		SteamAPICall_t* api_handle{};
-		SteamHTTP()->SetHTTPRequestHeaderValue(handle, "Authorization", json_data_str.c_str());
-		uint8_t p[1024];
-		std::copy(jsonData.begin(), jsonData.end(), std::begin(p));
-
-		SteamHTTP()->SetHTTPRequestRawPostBody(handle, "application/json", p, jsonData.length());
-		return handle;
-
-		//SteamHTTP()->SendHTTPRequest(handle, api_handle);
+		return {res, response_code};
 	}
 
 	// report first open event to AppsFlyer (or session if counter > 2)
-	HTTPRequestHandle af_firstOpen_init(RequestData req) {
+	tuple<CURLcode, long, uint64> af_firstOpen_init(RequestData req) {
 		//send requests
 		int af_counter = get_AF_counter();
 		if (af_counter < 2) {
-			return af_firstOpenRequest(req);
+			auto [res, rescode] = af_firstOpenRequest(req);
+			return { res, rescode, FIRST_OPEN_REQUEST };
 		}
 		else {
-			return af_sessionRequest(req);
+			auto [res, rescode] = af_sessionRequest(req);
+			return { res, rescode, SESSION_REQUEST };
 		}
 	}
 
 	// report inapp event to AppsFlyer 
-	HTTPRequestHandle af_inappEvent(RequestData req) {
+	tuple<CURLcode, long, uint64> af_inappEvent(RequestData req) {
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + _appid;
 
 		/* Now specify the POST data */
 		std::ostringstream oss;
 
 		// use ADL to select best to_string function
-		auto event_values_j_str = to_string(req.event_values);  // calling nlohmann::to_string
+		auto event_parameters_j_str = to_string(req.event_parameters);  // calling nlohmann::to_string
 
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":" << req.device_ids[1].value << "}],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\",\"event_parameters\":" << event_values_j_str << ",\"event_name\":\"" << req.event_name << "\"}";
+		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":" << req.device_ids[1].value << "}],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\",\"event_parameters\":" << event_parameters_j_str << ",\"event_name\":\"" << req.event_name << "\"}";
 		std::string jsonData = oss.str();
-
-		return send_http_post(url, jsonData, INAPP_EVENT_REQUEST);
+		auto [res, rescode] = send_http_post(url, jsonData, INAPP_EVENT_REQUEST);
+		return { res, rescode, INAPP_EVENT_REQUEST };
 	}
 
 	// return af uuid
@@ -250,7 +282,7 @@ private:
 	}
 
 	// report first open event to AppsFlyer 
-	HTTPRequestHandle af_firstOpenRequest(RequestData req) {
+	tuple<CURLcode, long> af_firstOpenRequest(RequestData req) {
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + _appid;
 
 		/* Now specify the POST data */
@@ -263,7 +295,7 @@ private:
 	}
 
 	// report session event (after the counter passes 2 opens) to AppsFlyer 
-	HTTPRequestHandle af_sessionRequest(RequestData req) {
+	tuple<CURLcode, long> af_sessionRequest(RequestData req) {
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/session/app/steam/" + _appid;
 
 		/* Now specify the POST data */
