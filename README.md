@@ -59,9 +59,9 @@ bool skipFirst = [SOME_CONDITION];
 AppsflyerSteamModule()->start(skipFirst);
 ```
 
-### `void **onCallbackSuccess**(HTTPRequestCompleted_t\* **pCallback**)`
+### `void onCallbackSuccess(long responseCode, uint64 context)`
 
-### `void **onCallbackFailure**(HTTPRequestCompleted_t\* **pCallback**)`
+### `void onCallbackFailure(long responseCode, uint64 context)`
 
 The above methods are placeholders for the desired actions upon success/failure.  
 It is possible to handle different types of events with the switch case of the context within each function (“FIRST_OPEN_REQUEST”, ”SESSION_REQUEST”, ”INAPP_EVENT_REQUEST”).

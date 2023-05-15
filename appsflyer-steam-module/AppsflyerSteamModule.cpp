@@ -18,86 +18,6 @@ CAppsflyerSteamModule::CAppsflyerSteamModule() {
 	SteamAPI_RunCallbacks();
 }
 
-void CAppsflyerSteamModule::OnHTTPCallBack(HTTPRequestCompleted_t* pCallback, bool bIOFailure)
-{
-	if (bIOFailure) {
-		onCallbackFailure(pCallback);
-	}
-	else {
-		onCallbackSuccess(pCallback);
-
-		AppsflyerModule afc(devkey, appID);
-
-		uint64 context = pCallback->m_ulContextValue;
-		switch (context)
-		{
-		case FIRST_OPEN_REQUEST:
-		case SESSION_REQUEST:
-			if (pCallback->m_eStatusCode == k_EHTTPStatusCode202Accepted)
-			{
-				afc.increase_AF_counter();
-			}
-			break;
-		case INAPP_EVENT_REQUEST:
-			break;
-		default:
-			break;
-		}
-	}
-	SteamHTTP()->ReleaseHTTPRequest(pCallback->m_hRequest);
-}
-
-void CAppsflyerSteamModule::send_http_post(HTTPRequestHandle handle, uint64 context) {
-	SteamAPICall_t api_handle{};
-	bool res = SteamHTTP()->SendHTTPRequest(handle, &api_handle);
-	switch (context)
-	{
-	case FIRST_OPEN_REQUEST:
-		m_SteamAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
-		break;
-	case INAPP_EVENT_REQUEST:
-		m_SteamEventAPICallCompleted.Set(api_handle, this, &CAppsflyerSteamModule::OnHTTPCallBack);
-		break;
-	default:
-		break;
-	}
-	SteamAPI_RunCallbacks();
-}
-
-void CAppsflyerSteamModule::onCallbackSuccess(HTTPRequestCompleted_t* pCallback) {
-	// Handle Success
-	uint64 context = pCallback->m_ulContextValue;
-	switch (context)
-	{
-		case FIRST_OPEN_REQUEST:
-		case SESSION_REQUEST:
-			// ** handle success for these callback **
-			break;
-		case INAPP_EVENT_REQUEST:
-			// ** handle success for this callback **
-			break;		
-		default:
-			break;
-	}
-}
-
-void CAppsflyerSteamModule::onCallbackFailure(HTTPRequestCompleted_t* pCallback) {
-	// Handle Failure
-	uint64 context = pCallback->m_ulContextValue;
-	switch (context)
-	{
-		case FIRST_OPEN_REQUEST:
-		case SESSION_REQUEST:
-			// ** handle failure for these callback **
-			break;
-		case INAPP_EVENT_REQUEST:
-			// ** handle failure for this callback **
-			break;
-		default:
-			break;
-	}
-}
-
 void CAppsflyerSteamModule::init(const char* dkey, const char* appid) {
 	devkey = dkey;
 	appID = appid;
@@ -140,11 +60,11 @@ void CAppsflyerSteamModule::start(bool skipFirst) {
 	steam_id.type = "steamid";
 	steam_id.value = steamID.c_str();
 	req.device_ids.insert(req.device_ids.end(), steam_id);
-
-	AppsflyerSteamModule()->send_http_post(afc.af_firstOpen_init(req), FIRST_OPEN_REQUEST);
+	auto [res, rescode, context] = afc.af_firstOpen_init(req);
+	AppsflyerSteamModule()->onHTTPCallBack(res, rescode, context);
 }
 
-void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) {
+void CAppsflyerSteamModule::logEvent(std::string event_name, json event_parameters) {
 	AppsflyerModule afc(devkey, appID);
 
 	CSteamID usrID = SteamUser()->GetSteamID();
@@ -184,9 +104,68 @@ void CAppsflyerSteamModule::logEvent(std::string event_name, json event_values) 
 	req.device_ids.insert(req.device_ids.end(), steam_id);
 
 	req.event_name = event_name;
-	req.event_values = event_values;
+	req.event_parameters = event_parameters;
+	auto [res, rescode, context] = afc.af_inappEvent(req);
+	AppsflyerSteamModule()->onHTTPCallBack(res, rescode, context);
+}
 
-	AppsflyerSteamModule()->send_http_post(afc.af_inappEvent(req), INAPP_EVENT_REQUEST);
+void CAppsflyerSteamModule::onHTTPCallBack(CURLcode res, long responseCode, uint64 context)
+{
+	if (res != CURLE_OK) {
+		// response failed
+		onCallbackFailure(responseCode, context);
+	}
+	else {
+		onCallbackSuccess(responseCode, context);
+		AppsflyerModule afc(devkey, appID);
+
+		switch (context)
+		{
+		case FIRST_OPEN_REQUEST:
+		case SESSION_REQUEST:
+			if (responseCode == k_EHTTPStatusCode202Accepted)
+			{
+				afc.increase_AF_counter();
+			}
+			break;
+		case INAPP_EVENT_REQUEST:
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void CAppsflyerSteamModule::onCallbackSuccess(long responseCode, uint64 context) {
+	// Handle Success
+	switch (context)
+	{
+	case FIRST_OPEN_REQUEST:
+	case SESSION_REQUEST:
+		// ** handle success for these callback **
+		break;
+	case INAPP_EVENT_REQUEST:
+		// ** handle success for this callback **
+		break;
+	default:
+		break;
+	}
+}
+
+void CAppsflyerSteamModule::onCallbackFailure(long responseCode, uint64 context) {
+	// Handle Failure
+	switch (context)
+	{
+	case FIRST_OPEN_REQUEST:
+	case SESSION_REQUEST:
+		// ** handle failure for these callback **
+		break;
+	case INAPP_EVENT_REQUEST:
+		// ** handle failure for this callback **
+		break;
+	default:
+		break;
+	}
 }
 
 bool CAppsflyerSteamModule::isInstallOlderThanDate(std::string datestring)
