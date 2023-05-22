@@ -9,7 +9,7 @@ slug: steam-vanilla
 > Link to repository  
 > [GitHub](https://github.com/AppsFlyerSDK/appsflyer-steam-sample-app)
 
-# AppsFlyer Steam C++ SDK integration
+## AppsFlyer Steam C++ SDK integration
 
 AppsFlyer empowers gaming marketers to make better decisions by providing powerful tools that solve real pain points, including cross-platform attribution, mobile and web analytics, deep linking, fraud detection, privacy management and preservation, and more.
 
