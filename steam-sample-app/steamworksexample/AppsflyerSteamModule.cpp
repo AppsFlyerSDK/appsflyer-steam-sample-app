@@ -173,3 +173,9 @@ bool CAppsflyerSteamModule::isInstallOlderThanDate(std::string datestring)
 	AppsflyerModule afc(devkey, appID);
 	return afc.isInstallOlderThanDate(datestring);
 }
+
+std::string CAppsflyerSteamModule::getAppsFlyerUID()
+{
+    AppsflyerModule afc(devkey, appID);
+	return afc.get_AF_id();
+}

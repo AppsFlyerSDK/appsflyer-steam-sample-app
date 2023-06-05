@@ -20,11 +20,13 @@ We recommend you use this sample app as a reference for integrating the code tha
 
 - [Steamworks SDK](https://partner.steamgames.com/doc/sdk) integrated in your project.
 - [vcpkg](https://vcpkg.io/en/index.html) openssl & nlohmann-json packages:
-  ```
-  vcpkg install nlohmann-json:x86-windows
-  vcpkg install openssl:x86-windows
-  ```
-  <hr/>
+
+```c++
+vcpkg install nlohmann-json:x86-windows
+vcpkg install openssl:x86-windows
+```
+
+<hr/>
 
 ## AppsflyerSteamModule - Interface
 
@@ -36,13 +38,13 @@ This method receives your API key and app ID and initializes the AppsFlyer Modul
 
 **Method signature**
 
-```
+```c++
 void init(const char* devkey, const char* appID)
 ```
 
 **Usage**:
 
-```
+```c++
 AppsflyerSteamModule()->init("DEV_KEY", "STEAM_APP_ID");
 ```
 
@@ -57,13 +59,13 @@ This method sends first open and /session requests to AppsFlyer.
 
 **Method signature**
 
-```
+```c++
 void start(bool skipFirst = false)
 ```
 
 **Usage**:
 
-```
+```c++
 // without the flag
 AppsflyerSteamModule()->start();
 
@@ -78,13 +80,13 @@ This method receives an event name and JSON object and sends in-app events to Ap
 
 **Method signature**
 
-```
+```c++
 void logEvent(std::string event_name, json event_values)
 ```
 
 **Usage**:
 
-```
+```c++
 json event_values = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 std::string event_name = "af_purchase";
 AppsflyerSteamModule()->logEvent(event_name, event_values);
@@ -92,7 +94,7 @@ AppsflyerSteamModule()->logEvent(event_name, event_values);
 
 **Note**: To use the JSON, make sure to use the following imports:
 
-```
+```c++
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 ```
@@ -104,9 +106,25 @@ It is possible to handle different types of events with the switch case of the c
 
 **Method signature**
 
-```
+```c++
 void onCallbackSuccess(long responseCode, uint64 context)
 void onCallbackFailure(long responseCode, uint64 context)
+```
+
+### GetAppsFlyerUID
+
+Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device ID upon app installation. When the SDK is started, this ID is recorded as the ID of the first app install.
+
+**Method signature**
+
+```c++
+std::string getAppsFlyerUID()
+```
+
+**Usage**:
+
+```c++
+AppsflyerSteamModule()->getAppsFlyerUID();
 ```
 
 ### IsInstallOlderThanDate
@@ -115,13 +133,13 @@ This method receives a date string and returns true if the game folder modificat
 
 **Method signature**
 
-```
+```c++
 bool isInstallOlderThanDate(std::string datestring)
 ```
 
 **Usage**:
 
-```
+```c++
 // the modification date in this example is "2023-January-23 08:30:00"
 
 // will return false
@@ -147,13 +165,17 @@ bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10 2
 
 1. Copy the files from the `appsflyer-module` folder into your C++ project under **Header Files** > **AppsFlyer**.
 2. Import the Module:
-   ```
-   #include "AppsflyerSteamModule.h"
-   ```
+
+```c++
+#include "AppsflyerSteamModule.h"
+```
+
 3. Import `nlohmann-json`.
-   ```
-   #include <nlohmann/json.hpp>
-   using json = nlohmann::json;
-   ```
-4. [Initialize](#void-initconst-char-devkey-const-char-appid) the AppsFlyer integration.
-5. Report [in-app events](#void-logeventstdstring-event_name-json-event_values).
+
+```c++
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+```
+
+4. [Initialize](#init) the AppsFlyer integration and call [start](#start).
+5. Report [in-app events](#logevent).
