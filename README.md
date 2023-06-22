@@ -22,6 +22,7 @@ We recommend you use this sample app as a reference for integrating the code tha
 - [vcpkg](https://vcpkg.io/en/index.html) openssl & nlohmann-json packages:
 
 ```c++
+vcpkg install curl:x86-windows
 vcpkg install nlohmann-json:x86-windows
 vcpkg install openssl:x86-windows
 ```
