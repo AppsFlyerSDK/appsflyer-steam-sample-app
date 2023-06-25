@@ -180,3 +180,10 @@ using json = nlohmann::json;
 
 4. [Initialize](#init) the AppsFlyer integration and call [start](#start).
 5. Report [in-app events](#logevent).
+
+
+## Deleting Steam cloud saves (resetting the attribution)
+
+1. [Disable Steam cloud](https://help.steampowered.com/en/faqs/view/68D2-35AB-09A9-7678#enabling).
+2. [Delete the local files](https://help.steampowered.com/en/faqs/view/68D2-35AB-09A9-7678#where).
+3. Remove the registry data from `SOFTWARE\Microsoft\Windows\CurrentVersion\Run`. The Registry keys are `AF_counter_[APPID]` and `AF_uuid_[APPID]`.
