@@ -186,21 +186,15 @@ public:
 		bool isInstallOlder = false;
 
 		AppId_t steamAppID = std::stoul(_appid, nullptr, 0);
-		char *pchFolder = new char[256];
-		uint32 cchFolderBufferSize = 256;
-		SteamApps()->GetAppInstallDir(steamAppID, pchFolder, cchFolderBufferSize);
+		char *pchFolder = new char[MAX_PATH];
+		SteamApps()->GetAppInstallDir(steamAppID, pchFolder, MAX_PATH);
 		struct stat result;
 		if (stat(pchFolder, &result) == 0)
 		{
-			//__time64_t excludeInstallDateBefore = "";
 			__time64_t mod_time = result.st_mtime;
-			auto folder_time = ctime(&mod_time);
 			std::time_t excludeInstallDateBefore = to_time_t(date);
 			double diff = difftime(mod_time, excludeInstallDateBefore);
-
 			isInstallOlder = diff < 0;
-
-			auto time = ctime(&mod_time);
 		}
 
 		return isInstallOlder;

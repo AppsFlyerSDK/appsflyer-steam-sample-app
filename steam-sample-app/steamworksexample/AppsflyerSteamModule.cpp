@@ -18,12 +18,12 @@ CAppsflyerSteamModule::CAppsflyerSteamModule() {
 	SteamAPI_RunCallbacks();
 }
 
-void CAppsflyerSteamModule::init(const char* dkey, const char* appid) {
+void CAppsflyerSteamModule::Init(const char* dkey, const char* appid) {
 	devkey = dkey;
 	appID = appid;
 }
 
-void CAppsflyerSteamModule::start(bool skipFirst) {
+void CAppsflyerSteamModule::Start(bool skipFirst) {
 	AppsflyerModule afc(devkey, appID);
 	CSteamID usrID = SteamUser()->GetSteamID();
 	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
@@ -61,10 +61,10 @@ void CAppsflyerSteamModule::start(bool skipFirst) {
 	steam_id.value = steamID.c_str();
 	req.device_ids.insert(req.device_ids.end(), steam_id);
 	auto [res, rescode, context] = afc.af_firstOpen_init(req);
-	AppsflyerSteamModule()->onHTTPCallBack(res, rescode, context);
+	AppsflyerSteamModule()->OnHTTPCallBack(res, rescode, context);
 }
 
-void CAppsflyerSteamModule::logEvent(std::string event_name, json event_parameters) {
+void CAppsflyerSteamModule::LogEvent(std::string event_name, json event_parameters) {
 	AppsflyerModule afc(devkey, appID);
 
 	CSteamID usrID = SteamUser()->GetSteamID();
@@ -106,17 +106,17 @@ void CAppsflyerSteamModule::logEvent(std::string event_name, json event_paramete
 	req.event_name = event_name;
 	req.event_parameters = event_parameters;
 	auto [res, rescode, context] = afc.af_inappEvent(req);
-	AppsflyerSteamModule()->onHTTPCallBack(res, rescode, context);
+	AppsflyerSteamModule()->OnHTTPCallBack(res, rescode, context);
 }
 
-void CAppsflyerSteamModule::onHTTPCallBack(CURLcode res, long responseCode, uint64 context)
+void CAppsflyerSteamModule::OnHTTPCallBack(CURLcode res, long responseCode, uint64 context)
 {
 	if (res != CURLE_OK) {
 		// response failed
-		onCallbackFailure(responseCode, context);
+		OnCallbackFailure(responseCode, context);
 	}
 	else {
-		onCallbackSuccess(responseCode, context);
+		OnCallbackSuccess(responseCode, context);
 		AppsflyerModule afc(devkey, appID);
 
 		switch (context)
@@ -136,7 +136,7 @@ void CAppsflyerSteamModule::onHTTPCallBack(CURLcode res, long responseCode, uint
 	}
 }
 
-void CAppsflyerSteamModule::onCallbackSuccess(long responseCode, uint64 context) {
+void CAppsflyerSteamModule::OnCallbackSuccess(long responseCode, uint64 context) {
 	// Handle Success
 	switch (context)
 	{
@@ -152,7 +152,7 @@ void CAppsflyerSteamModule::onCallbackSuccess(long responseCode, uint64 context)
 	}
 }
 
-void CAppsflyerSteamModule::onCallbackFailure(long responseCode, uint64 context) {
+void CAppsflyerSteamModule::OnCallbackFailure(long responseCode, uint64 context) {
 	// Handle Failure
 	switch (context)
 	{
@@ -168,13 +168,13 @@ void CAppsflyerSteamModule::onCallbackFailure(long responseCode, uint64 context)
 	}
 }
 
-bool CAppsflyerSteamModule::isInstallOlderThanDate(std::string datestring)
+bool CAppsflyerSteamModule::IsInstallOlderThanDate(std::string datestring)
 {
 	AppsflyerModule afc(devkey, appID);
 	return afc.isInstallOlderThanDate(datestring);
 }
 
-std::string CAppsflyerSteamModule::getAppsFlyerUID()
+std::string CAppsflyerSteamModule::GetAppsFlyerUID()
 {
     AppsflyerModule afc(devkey, appID);
 	return afc.get_AF_id();

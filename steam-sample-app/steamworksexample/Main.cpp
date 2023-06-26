@@ -250,35 +250,22 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 	}
 	else {
 		// Initialize the AF connector
-		AppsflyerSteamModule()->init("bFzaVu2iecN77po5mWMJuL", "1234561");
+		AppsflyerSteamModule()->Init("DEV_KEY", "STEAM_APP_ID");
 
 		// the modification date in this example is "2023-January-23 08:30:00"
-
 		// will return false
-		bool dateBefore = AppsflyerSteamModule()->isInstallOlderThanDate("2023-January-01 23:12:34");
+		bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-01 23:12:34");
 
 		// will return true
-		bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10 23:12:34");
+		bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
+		 
+		AppsflyerSteamModule()->Start();
 
-		AppsflyerSteamModule()->start();
-		
 		// Setting the event values json and event name
 		json event_parameters = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
 		std::string event_name = "af_purchase";
 		//sending the in-app event via the connector
-		AppsflyerSteamModule()->logEvent(event_name, event_parameters);
-
-		AppId_t steamID = 480;
-		char* pchFolder = new char[256];
-		uint32 cchFolderBufferSize = 256;
-		SteamApps()->GetAppInstallDir(steamID, pchFolder, cchFolderBufferSize);
-		struct stat result;
-		if (stat(pchFolder, &result) == 0)
-		{
-			__time64_t mod_time = result.st_mtime;
-			auto time = ctime(&mod_time);
-			time = ctime(&mod_time);
-		}
+		AppsflyerSteamModule()->LogEvent(event_name, event_parameters);
 	}
 
 	const char *pchServerAddress, *pchLobbyID;

@@ -27,3 +27,12 @@
 
 *.log
 *.tlog
+*.ipch
+*.db-shm
+*.db-wal
+*.opendb
+*.db
+*.lock
+*.vsidx
+*.pdb
+steam-sample-app/steamworksexample/.vs
