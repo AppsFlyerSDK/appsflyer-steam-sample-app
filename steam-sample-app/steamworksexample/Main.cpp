@@ -250,7 +250,10 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 	}
 	else {
 		// Initialize the AF connector
-		AppsflyerSteamModule()->Init("DEV_KEY", "STEAM_APP_ID");
+		const char* DEV_KEY;
+		const char* STEAM_APP_ID;
+		 
+		AppsflyerSteamModule()->Init(DEV_KEY, STEAM_APP_ID);
 
 		// the modification date in this example is "2023-January-23 08:30:00"
 		// will return false

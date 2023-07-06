@@ -74,9 +74,9 @@ public:
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, jsonData.length());
 			curl_easy_setopt(curl, CURLOPT_POST, 1);
 			std::string userAgentStr = "Valve/Steam HTTP Client 1.0 (" + _appid + ")";
-			const char* userAgent = userAgentStr.c_str();
+			const char *userAgent = userAgentStr.c_str();
 			curl_easy_setopt(curl, CURLOPT_USERAGENT, userAgent);
-			//curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888"); // redirect traffic to Fiddler for debugging
+			// curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888"); // redirect traffic to Fiddler for debugging
 
 			/* Perform the request, res will get the return code */
 			curl_easy_perform(curl);
@@ -127,7 +127,7 @@ public:
 		// use ADL to select best to_string function
 		auto event_parameters_j_str = to_string(req.event_parameters); // calling nlohmann::to_string
 
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":" << req.device_ids[1].value << "}],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\",\"event_parameters\":" << event_parameters_j_str << ",\"event_name\":\"" << req.event_name << "\"}";
+		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":\"" << req.device_ids[1].value << "\"}],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\",\"event_parameters\":" << event_parameters_j_str << ",\"event_name\":\"" << req.event_name << "\"}";
 		std::string jsonData = oss.str();
 		auto [res, rescode] = send_http_post(url, jsonData, INAPP_EVENT_REQUEST);
 		return {res, rescode, INAPP_EVENT_REQUEST};
@@ -310,7 +310,7 @@ private:
 
 		/* Now specify the POST data */
 		std::ostringstream oss;
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value.c_str() << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":" << req.device_ids[1].value.c_str() << "}],\"timestamp\":" << req.timestamp << ",\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\"}";
+		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value.c_str() << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":\"" << req.device_ids[1].value.c_str() << "\"}],\"timestamp\":" << req.timestamp << ",\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\"}";
 		std::string jsonData = oss.str();
 
 		return send_http_post(url, jsonData, FIRST_OPEN_REQUEST);

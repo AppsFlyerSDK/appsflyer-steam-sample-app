@@ -36,3 +36,4 @@
 *.vsidx
 *.pdb
 steam-sample-app/steamworksexample/.vs
+.vscode/settings.json
