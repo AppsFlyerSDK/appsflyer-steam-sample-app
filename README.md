@@ -46,7 +46,7 @@ void init(const char* devkey, const char* appID)
 **Usage**:
 
 ```c++
-AppsflyerSteamModule()->init("DEV_KEY", "STEAM_APP_ID");
+AppsflyerSteamModule()->init(<< DEV_KEY >>, << STEAM_APP_ID >>);
 ```
 
 <span id="app-details">**Arguments**:</span>
@@ -148,6 +148,10 @@ bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-0
 
 // will return true
 bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
+
+// example usage with skipFirst:
+bool isInstallOlderThanDate = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
+AppsflyerSteamModule()->Start(isInstallOlderThanDate);
 ```
 
 ## Running the sample app
