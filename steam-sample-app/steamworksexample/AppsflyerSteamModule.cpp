@@ -18,18 +18,10 @@ CAppsflyerSteamModule::CAppsflyerSteamModule() {
 	SteamAPI_RunCallbacks();
 }
 
-void CAppsflyerSteamModule::Init(const char* dkey, const char* appid) {
-	devkey = dkey;
-	appID = appid;
-}
-
-void CAppsflyerSteamModule::Start(bool skipFirst) {
-	AppsflyerModule afc(devkey, appID);
-	CSteamID usrID = SteamUser()->GetSteamID();
-	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
-	std::ostringstream os;
-	os << steamIDInt;
-	std::string steamID = os.str();
+RequestData CAppsflyerSteamModule::CreateRequestData()
+{
+	AppsflyerModule afc(devkey, appID, collectSteamUid);
+	RequestData req;
 
 	//steam app build id
 	int bid = SteamApps()->GetAppBuildId();
@@ -41,7 +33,6 @@ void CAppsflyerSteamModule::Start(bool skipFirst) {
 	oss << t;
 	std::string timestamp = oss.str();
 
-	RequestData req;
 	req.timestamp = timestamp;
 	req.device_os_version = "1.0.0";
 	req.app_version = app_version;
@@ -55,53 +46,67 @@ void CAppsflyerSteamModule::Start(bool skipFirst) {
 	af_id.value = afc.get_AF_id().c_str();
 	req.device_ids.insert(req.device_ids.end(), af_id);
 
-	//adding steam uid to the request - TODO: add to request json after approved by the server
-	DeviceIDs steam_id;
-	steam_id.type = "steamid";
-	steam_id.value = steamID.c_str();
-	req.device_ids.insert(req.device_ids.end(), steam_id);
+	if (collectSteamUid) {
+		//adding steam uid to the request
+		DeviceIDs steam_id;
+		steam_id.type = "steamid";
+		steam_id.value = GetSteamUID().c_str();
+		req.device_ids.insert(req.device_ids.end(), steam_id);
+	}
+
+	if (!cuid.empty()) {
+		req.customer_user_id = cuid;
+	}
+
+	return req;
+}
+
+void CAppsflyerSteamModule::Init(const char* dkey, const char* appid, bool collectSteam) {
+	devkey = dkey;
+	appID = appid;
+	collectSteamUid = collectSteam;
+	isStopped = true;
+}
+
+std::string CAppsflyerSteamModule::GetSteamUID() {
+	CSteamID usrID = SteamUser()->GetSteamID();
+	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
+	std::ostringstream os;
+	os << steamIDInt;
+	std::string steamID = os.str();
+	return steamID;
+}
+
+void CAppsflyerSteamModule::Start(bool skipFirst) {
+	isStopped = false;
+	AppsflyerModule afc(devkey, appID, collectSteamUid);
+	RequestData req = CreateRequestData();
 	auto [res, rescode, context] = afc.af_firstOpen_init(req);
 	AppsflyerSteamModule()->OnHTTPCallBack(res, rescode, context);
 }
 
+void CAppsflyerSteamModule::Stop()
+{
+	isStopped = true;
+}
+
+void CAppsflyerSteamModule::SetCustomerUserId(std::string customerUserID)
+{
+	if (!isStopped) {
+		// Cannot set CustomerUserID while the SDK has started.
+		return;
+	}
+	// Customer User ID has been set
+	cuid = customerUserID;
+}
+
 void CAppsflyerSteamModule::LogEvent(std::string event_name, json event_parameters) {
-	AppsflyerModule afc(devkey, appID);
+	if (isStopped) {
+		return;
+	}
+	AppsflyerModule afc(devkey, appID, collectSteamUid);
 
-	CSteamID usrID = SteamUser()->GetSteamID();
-	const auto steamIDInt = SteamUser()->GetSteamID().ConvertToUint64();
-	std::ostringstream os;
-	os << steamIDInt;
-	std::string steamID = os.str();
-
-	//steam app build id
-	int bid = SteamApps()->GetAppBuildId();
-	std::string app_version = std::to_string(bid);
-
-	//create timestamp
-	std::time_t t = std::time(0);
-	std::ostringstream oss;
-	oss << t;
-	std::string timestamp = oss.str();
-
-	RequestData req;
-	req.timestamp = timestamp;
-	req.device_os_version = "1.0.0";
-	req.app_version = app_version;
-	req.device_model = afc.get_OS(); //TODO: check how to retreive device model - in the meantime send 'steam'
-	req.limit_ad_tracking = "false";
-	req.request_id = afc.uuid_gen().c_str();
-
-	//adding AF id to the request
-	DeviceIDs af_id;
-	af_id.type = "custom";
-	af_id.value = afc.get_AF_id().c_str();
-	req.device_ids.insert(req.device_ids.end(), af_id);
-
-	//adding steam uid to the request - TODO: add to request json after approved by the server
-	DeviceIDs steam_id;
-	steam_id.type = "steamid";
-	steam_id.value = steamID.c_str();
-	req.device_ids.insert(req.device_ids.end(), steam_id);
+	RequestData req = CreateRequestData();
 
 	req.event_name = event_name;
 	req.event_parameters = event_parameters;
@@ -117,7 +122,7 @@ void CAppsflyerSteamModule::OnHTTPCallBack(CURLcode res, long responseCode, uint
 	}
 	else {
 		OnCallbackSuccess(responseCode, context);
-		AppsflyerModule afc(devkey, appID);
+		AppsflyerModule afc(devkey, appID, collectSteamUid);
 
 		switch (context)
 		{
@@ -170,12 +175,12 @@ void CAppsflyerSteamModule::OnCallbackFailure(long responseCode, uint64 context)
 
 bool CAppsflyerSteamModule::IsInstallOlderThanDate(std::string datestring)
 {
-	AppsflyerModule afc(devkey, appID);
+	AppsflyerModule afc(devkey, appID, collectSteamUid);
 	return afc.isInstallOlderThanDate(datestring);
 }
 
 std::string CAppsflyerSteamModule::GetAppsFlyerUID()
 {
-    AppsflyerModule afc(devkey, appID);
+    AppsflyerModule afc(devkey, appID, collectSteamUid);
 	return afc.get_AF_id();
 }

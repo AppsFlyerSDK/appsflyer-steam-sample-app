@@ -6,8 +6,3 @@ C:\Users\GilMor\Documents\repos\steam-mockup\sdk\steamworksexample\Release\steam
 C:\Users\GilMor\Documents\repos\steam-mockup\sdk\steamworksexample\Release\SteamworksExample.vcxproj.CopyComplete
 C:\Users\GilMor\Documents\repos\steam-mockup\sdk\steamworksexample\Release\libcrypto-3.dll
 C:\Users\GilMor\Documents\GitHub\steam-af-mockup\sdk\steamworksexample\Release\steamworksexample.exe
-C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\steamworksexample.exe
-C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\SteamworksExample.vcxproj.CopyComplete
-C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\libcrypto-3.dll
-C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\libcurl.dll
-C:\Users\GilMor\Documents\GitHub\appsflyer-steam-sample-app\steam-sample-app\steamworksexample\Release\zlib1.dll

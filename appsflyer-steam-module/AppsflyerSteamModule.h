@@ -9,9 +9,12 @@ public:
 	//This method receives your api key and app id,
 	// This method receives your api key and app id,
 	// and initializes the AppsFlyer Connector 
-	void Init(const char* devkey, const char* appID);
+	void Init(const char* devkey, const char* appID, bool collectSteamUid = true);
 	// sends “first open/session” request to AppsFlyer.
 	void Start(bool skipFirst = false);
+	// stop the AppsFlyer SDK
+	void Stop();
+	void SetCustomerUserId(std::string cuid);
 	/*  These methods are called upon a un/successful steam http request callback.
 	Those are placeholders that you can fill with the desired actions upon success/failure
 	(within AppsflyerSteamModule.cpp file) */
@@ -25,8 +28,13 @@ public:
 private:
 	const char* devkey;
 	const char* appID;
+	bool isStopped;
+	bool collectSteamUid;
+	std::string cuid;
+	std::string GetSteamUID();
 	friend CAppsflyerSteamModule* AppsflyerSteamModule();
 	CAppsflyerSteamModule();
+	RequestData CreateRequestData();
 	void OnHTTPCallBack(CURLcode res, long responseCode, uint64 context);
 };
 
