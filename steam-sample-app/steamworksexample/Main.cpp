@@ -250,10 +250,16 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 	}
 	else {
 		// Initialize the AF connector
-		const char* DEV_KEY;
-		const char* STEAM_APP_ID;
+		const char* DEV_KEY = << DEV_KEY >>;
+		const char* STEAM_APP_ID = << STEAM_APP_ID >>;
 		 
 		AppsflyerSteamModule()->Init(DEV_KEY, STEAM_APP_ID);
+		
+		// Test init the SDK without collecting SteamUID
+		//AppsflyerSteamModule()->Init(DEV_KEY, STEAM_APP_ID, false);
+		
+		// Test setting CUID
+		//AppsflyerSteamModule()->SetCustomerUserId("Test-18-9-23");
 
 		// the modification date in this example is "2023-January-23 08:30:00"
 		// will return false
@@ -263,6 +269,9 @@ static int RealMain( const char *pchCmdLine, HINSTANCE hInstance, int nCmdShow )
 		bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10 23:12:34");
 		 
 		AppsflyerSteamModule()->Start();
+
+		// Test stopping the SDK
+		//AppsflyerSteamModule()->Stop();
 
 		// Setting the event values json and event name
 		json event_parameters = { {"af_currency", "USD"}, {"af_price", 6.66}, {"af_revenue", 24.12} };
