@@ -123,21 +123,7 @@ public:
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + _appid;
 
 		/* Now specify the POST data */
-		std::ostringstream oss;
-
-		// use ADL to select best to_string function
-		auto event_parameters_j_str = to_string(req.event_parameters); // calling nlohmann::to_string
-
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"}";
-		if (_isCollectSteamUid) {
-			oss << ",{\"type\":\"" << req.device_ids[1].type << "\",\"value\":\"" << req.device_ids[1].value << "\"}"; 
-		}
-		oss << "],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\",\"event_parameters\":" << event_parameters_j_str << ",\"event_name\":\"" << req.event_name << "\"";
-		if (!req.customer_user_id.empty()) {
-			oss << ", \"customer_user_id\":\"" << req.customer_user_id << "\"";
-		}
-		oss << "}";
-		std::string jsonData = oss.str();
+		std::string jsonData = postDataStr(req, true);
 		auto [res, rescode] = send_http_post(url, jsonData, INAPP_EVENT_REQUEST);
 		return {res, rescode, INAPP_EVENT_REQUEST};
 	}
@@ -320,9 +306,7 @@ private:
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + _appid;
 
 		/* Now specify the POST data */
-		std::ostringstream oss;
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value.c_str() << "\"},{\"type\":\"" << req.device_ids[1].type << "\",\"value\":\"" << req.device_ids[1].value.c_str() << "\"}],\"timestamp\":" << req.timestamp << ",\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\"}";
-		std::string jsonData = oss.str();
+		std::string jsonData = postDataStr(req);
 
 		return send_http_post(url, jsonData, FIRST_OPEN_REQUEST);
 		// CURLcode res = send_http_post(url, jsonData);
@@ -334,11 +318,29 @@ private:
 		std::string url = "https://events.appsflyer.com/v1.0/c2s/session/app/steam/" + _appid;
 
 		/* Now specify the POST data */
-		std::ostringstream oss;
-		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value.c_str() << "\"}],\"timestamp\":" << req.timestamp << ",\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\"}";
-		std::string jsonData = oss.str();
+		std::string jsonData = postDataStr(req);
 
 		return send_http_post(url, jsonData, SESSION_REQUEST);
+	}
+
+	
+	std::string postDataStr(RequestData req, bool isEvent = false) {
+		std::ostringstream oss;
+		oss << "{\"device_ids\":[{\"type\":\"" << req.device_ids[0].type << "\",\"value\":\"" << req.device_ids[0].value << "\"}";
+		if (_isCollectSteamUid) {
+			oss << ",{\"type\":\"" << req.device_ids[1].type << "\",\"value\":\"" << req.device_ids[1].value << "\"}"; 
+		}
+		oss << "],\"request_id\":\"" << req.request_id << "\",\"device_os_version\":\"" << req.device_os_version << "\",\"device_model\":\"" << req.device_model << "\",\"limit_ad_tracking\":" << req.limit_ad_tracking << ",\"app_version\":\"" << req.app_version << "\"";
+		if (isEvent) {
+			auto event_parameters_j_str = to_string(req.event_parameters); // calling nlohmann::to_string
+			oss << ",\"event_parameters\":" << event_parameters_j_str << ",\"event_name\":\"" << req.event_name << "\"";
+		}
+		if (!req.customer_user_id.empty()) {
+			oss << ",\"customer_user_id\":\"" << req.customer_user_id << "\"";
+		}
+		oss << "}";
+
+		return oss.str();
 	}
 
 	// encrypt data with _devkey
