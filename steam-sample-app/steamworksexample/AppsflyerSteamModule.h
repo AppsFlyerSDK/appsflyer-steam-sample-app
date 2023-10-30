@@ -1,8 +1,9 @@
-#pragma once
+Ôªø#pragma once
 #include "steam/steam_api.h"
 #include "RequestData.h"
 #include <curl/curl.h>
-
+#include <codecvt> // codecvt_utf8
+#include <locale>  // wstring_convert
 
 class CAppsflyerSteamModule {
 public:
@@ -10,7 +11,7 @@ public:
 	// This method receives your api key and app id,
 	// and initializes the AppsFlyer Connector 
 	void Init(const char* devkey, const char* appID, bool collectSteamUid = true);
-	// sends ìfirst open/sessionî request to AppsFlyer.
+	// sends ‚Äúfirst open/session‚Äù request to AppsFlyer.
 	void Start(bool skipFirst = false);
 	// stop the AppsFlyer SDK
 	void Stop();
@@ -20,11 +21,12 @@ public:
 	(within AppsflyerSteamModule.cpp file) */
 	void OnCallbackSuccess(long responseCode, uint64 context);
 	void OnCallbackFailure(long responseCode, uint64 context);
-	// This method receives an event name and json object and sends an in-app event to AppsFlyer.
-	void LogEvent(std::string event_name, json event_parameters);
+	// This method receives an event name and event_parameters json object and sends an in-app event to AppsFlyer.
+	void LogEvent(std::string event_name, json event_parameters, json event_custom_parameters = {});
 	// returns true whether the game was installed before the given date
 	bool IsInstallOlderThanDate(std::string datestring);
 	std::string GetAppsFlyerUID();
+	std::string to_utf8(std::wstring& wide_string);
 private:
 	const char* devkey;
 	const char* appID;
