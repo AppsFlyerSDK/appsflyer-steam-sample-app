@@ -100,7 +100,7 @@ void CAppsflyerSteamModule::SetCustomerUserId(std::string customerUserID)
 	cuid = customerUserID;
 }
 
-void CAppsflyerSteamModule::LogEvent(std::string event_name, json event_parameters) {
+void CAppsflyerSteamModule::LogEvent(std::string event_name, json event_parameters, json event_custom_parameters) {
 	if (isStopped) {
 		return;
 	}
@@ -110,6 +110,8 @@ void CAppsflyerSteamModule::LogEvent(std::string event_name, json event_paramete
 
 	req.event_name = event_name;
 	req.event_parameters = event_parameters;
+	req.event_custom_parameters = event_custom_parameters;
+
 	auto [res, rescode, context] = afc.af_inappEvent(req);
 	AppsflyerSteamModule()->OnHTTPCallBack(res, rescode, context);
 }
@@ -183,4 +185,10 @@ std::string CAppsflyerSteamModule::GetAppsFlyerUID()
 {
     AppsflyerModule afc(devkey, appID, collectSteamUid);
 	return afc.get_AF_id();
+}
+
+std::string CAppsflyerSteamModule::to_utf8(std::wstring& wide_string)
+{
+	static std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+	return utf8_conv.to_bytes(wide_string);
 }

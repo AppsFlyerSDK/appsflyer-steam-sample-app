@@ -63,6 +63,8 @@
     <Library Include="..\redistributable_bin\steam_api.lib" />
     <Library Include="..\public\steam\lib\win32\sdkencryptedappticket.lib" />
     <Library Include="..\redistributable_bin\steam_api.lib" />
+    <Library Include="..\public\steam\lib\win32\sdkencryptedappticket.lib" />
+    <Library Include="..\redistributable_bin\steam_api.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
