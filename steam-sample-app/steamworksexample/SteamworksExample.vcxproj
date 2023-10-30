@@ -72,11 +72,11 @@
     <CustomBuildStep>
     </CustomBuildStep>
     <ClCompile>
-      <AdditionalOptions> /std:c++17 /bigobj /Zc:__cplusplus</AdditionalOptions>
+      <AdditionalOptions> /std:c++17 /bigobj /Zc:__cplusplus /execution-charset:utf-8</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;..\public</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions);_DEBUG;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\dev\Steam\main\src\SteamWorksExample;_DLL_EXT=.dll;VPCGAME=valve</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions);_DEBUG;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\dev\Steam\main\src\SteamWorksExample;_DLL_EXT=.dll;VPCGAME=valve;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
