@@ -245,7 +245,7 @@ AppsflyerSteamModule()->Start(!isInstallOlderThanDate);
 3. Open the `Source Files/Main.cpp` file.
 4. On line 244, replace `DEV_KEY` and `STEAM_APP_ID` with your [app details](#app-details).
 5. Run the app by clicking **Play** on the top toolbar (Local Windows Debugger). Make sure that the mode is set to Debug.
-   ![Visual Studio Toolbar Image](images/vs-run.PNG?raw=true "Visual Studio Toolbar Image")
+   ![Visual Studio Toolbar Image](https://files.readme.io/f25ef88-vs-run.png "Visual Studio Toolbar Image")
 6. After 24 hours, the dashboard updates and shows organic and non-organic installs and in-app events.
 
 ## Implementing AppsFlyer in your Steam game
